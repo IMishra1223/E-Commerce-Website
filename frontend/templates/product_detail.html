@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} - Luxe Store{% endblock %}
+
+{% block content %}
+<div class="product-detail-container">
+    <div class="breadcrumb">
+        <a href="{{ url_for('index') }}">Home</a>
+        <i class="fa-solid fa-chevron-right separator"></i>
+        <span>{{ product.category.name if product.category else 'Store' }}</span>
+        <i class="fa-solid fa-chevron-right separator"></i>
+        <span class="current">{{ product.name }}</span>
+    </div>
+
+    <div class="detail-grid">
+        <div class="detail-gallery">
+            <div class="main-image-wrapper">
+                {% if product.image_url %}
+                <img src="{{ product.image_url }}" alt="{{ product.name }}" class="detail-main-img">
+                {% else %}
+                <div class="detail-placeholder">
+                    <i class="fa-solid fa-image"></i>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="detail-info">
+            <span class="detail-category">{{ product.category.name if product.category else '' }}</span>
+            <h1 class="detail-title">{{ product.name }}</h1>
+            <div class="detail-price-box">
+                <span class="detail-price">${{ product.price }}</span>
+                {% if product.stock %}
+                <span class="stock-status in-stock"><i class="fa-solid fa-check"></i> In Stock ({{ product.stock
+                    }})</span>
+                {% else %}
+                <span class="stock-status out-of-stock"><i class="fa-solid fa-xmark"></i> Out of Stock</span>
+                {% endif %}
+            </div>
+
+            <div class="detail-description">
+                <p>{{ product.description or 'No description available for this product.' }}</p>
+            </div>
+
+            <div class="add-to-cart-form">
+                <div class="quantity-selector">
+                    <button class="qty-btn minus">-</button>
+                    <input type="number" value="1" min="1" max="{{ product.stock or 1 }}" class="qty-input">
+                    <button class="qty-btn plus">+</button>
+                </div>
+                <button class="btn btn-primary add-to-cart-btn" {% if not product.stock %}disabled{% endif %}>
+                    Add to Cart
+                </button>
+            </div>
+
+            <div class="product-features">
+                <div class="feature"><i class="fa-solid fa-truck-fast"></i> Free shipping over $100</div>
+                <div class="feature"><i class="fa-solid fa-rotate-left"></i> 30-day return policy</div>
+                <div class="feature"><i class="fa-solid fa-shield-halved"></i> Secure checkout</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

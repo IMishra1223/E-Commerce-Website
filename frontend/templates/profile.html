@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile - Luxe Store{% endblock %}
+
+{% block content %}
+<div
+    style="max-width: 800px; margin: 4rem auto 8rem; padding: 3rem 2rem; background: white; border-radius: var(--radius-lg); border: 1px solid var(--clr-border); box-shadow: var(--shadow-sm);">
+    <div
+        style="display: flex; align-items: center; gap: 2rem; margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 1px solid var(--clr-border);">
+        <div
+            style="width: 80px; height: 80px; border-radius: 50%; background: var(--clr-primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 600;">
+            {{ user.username[0]|upper }}
+        </div>
+        <div>
+            <h1 style="font-size: 2rem; margin-bottom: 0.25rem; letter-spacing: -0.02em;">{{ user.username }}</h1>
+            <p style="color: var(--clr-text-muted); font-size: 1rem;">{{ user.email }}</p>
+        </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+        <div style="background: var(--clr-bg); padding: 1.5rem; border-radius: var(--radius-sm);">
+            <h3 style="margin-bottom: 1rem; font-size: 1.125rem;"><i class="fa-solid fa-box"
+                    style="color: var(--clr-primary); margin-right: 0.5rem;"></i> Recent Orders</h3>
+            <p style="color: var(--clr-text-muted); font-size: 0.875rem;">You haven't placed any orders yet.</p>
+            <a href="{{ url_for('shop') }}" class="btn btn-secondary"
+                style="margin-top: 1rem; padding: 0.5rem 1rem; font-size: 0.875rem;">Start Shopping</a>
+        </div>
+
+        <div style="background: var(--clr-bg); padding: 1.5rem; border-radius: var(--radius-sm);">
+            <h3 style="margin-bottom: 1rem; font-size: 1.125rem;"><i class="fa-solid fa-location-dot"
+                    style="color: var(--clr-primary); margin-right: 0.5rem;"></i> Addresses</h3>
+            <p style="color: var(--clr-text-muted); font-size: 0.875rem;">No saved addresses found.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

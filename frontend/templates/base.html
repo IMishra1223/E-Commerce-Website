@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Luxe Store{% endblock %}</title>
+    <!-- Google Fonts for modern typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <meta name="description" content="Discover premium products at Luxe Store.">
+    <style>
+        .dropdown-container:hover .dropdown-content {
+            display: block !important;
+        }
+
+        .dropdown-content a:hover {
+            background-color: var(--clr-bg);
+            color: var(--clr-accent) !important;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('index') }}" class="brand-logo">Luxe<span class="highlight">.</span></a>
+            <nav class="nav-links">
+                <a href="{{ url_for('index') }}"
+                    class="nav-link {% if request.endpoint == 'index' %}active{% endif %}">Home</a>
+                <a href="{{ url_for('shop') }}"
+                    class="nav-link {% if request.endpoint == 'shop' and not request.args.get('category') %}active{% endif %}">Shop</a>
+                <div class="dropdown-container" style="position: relative; display: inline-block;">
+                    <a href="#" class="nav-link {% if request.args.get('category') %}active{% endif %}"
+                        id="categoriesDropdown">Categories <i class="fa-solid fa-chevron-down"
+                            style="font-size: 0.75rem; margin-left: 0.25rem;"></i></a>
+                    <div class="dropdown-content"
+                        style="display: none; position: absolute; background-color: white; min-width: 180px; box-shadow: var(--shadow-lg); border-radius: var(--radius-sm); z-index: 10; top: 100%; left: 0; padding: 0.5rem 0; border: 1px solid var(--clr-border);">
+                        {% for cat in categories %}
+                        <a href="{{ url_for('shop', category=cat.id) }}"
+                            style="color: var(--clr-text-main); padding: 0.75rem 1.25rem; text-decoration: none; display: block; font-size: 0.875rem; transition: all 0.2s ease;">{{
+                            cat.name }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </nav>
+            <div class="nav-actions">
+                <form action="{{ url_for('shop') }}" method="GET" class="search-form"
+                    style="display: flex; align-items: center; background: var(--clr-bg); border-radius: var(--radius-full); padding: 0.25rem 0.5rem; margin-right: 0.5rem; border: 1px solid transparent; transition: border-color 0.2s ease;">
+                    <input type="text" name="search" placeholder="Search..."
+                        style="border: none; background: transparent; padding: 0.25rem 0.5rem; outline: none; width: 140px; font-family: inherit; font-size: 0.9rem; color: var(--clr-text-main);">
+                    <button type="submit" class="icon-btn" aria-label="Search" style="width: 32px; height: 32px;"><i
+                            class="fa-solid fa-magnifying-glass" style="font-size: 1rem;"></i></button>
+                </form>
+                <a href="{{ url_for('view_cart') }}" class="icon-btn" aria-label="Cart">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    {% if cart_count > 0 %}
+                    <span class="cart-badge">{{ cart_count }}</span>
+                    {% endif %}
+                </a>
+                {% if current_user %}
+                <div class="dropdown-container" style="position: relative; display: inline-block;">
+                    <button class="icon-btn" aria-label="User Account"
+                        style="display: flex; align-items: center; gap: 0.5rem; padding: 0 0.5rem; width: auto; font-weight: 500; font-size: 0.9rem;">
+                        <i class="fa-regular fa-user-circle"></i> {{ current_user.username }}
+                    </button>
+                    <div class="dropdown-content"
+                        style="display: none; position: absolute; background-color: white; min-width: 150px; box-shadow: var(--shadow-lg); border-radius: var(--radius-sm); z-index: 10; top: 100%; right: 0; padding: 0.5rem 0; border: 1px solid var(--clr-border);">
+                        <a href="{{ url_for('profile') }}"
+                            style="color: var(--clr-text-main); padding: 0.75rem 1.25rem; text-decoration: none; display: block; font-size: 0.875rem;"><i
+                                class="fa-solid fa-user" style="margin-right: 0.5rem; width: 16px;"></i> Profile</a>
+                        <a href="{{ url_for('logout') }}"
+                            style="color: var(--clr-error); padding: 0.75rem 1.25rem; text-decoration: none; display: block; font-size: 0.875rem; border-top: 1px solid var(--clr-border);"><i
+                                class="fa-solid fa-arrow-right-from-bracket"
+                                style="margin-right: 0.5rem; width: 16px;"></i> Logout</a>
+                    </div>
+                </div>
+                {% else %}
+                <a href="{{ url_for('login') }}" class="icon-btn" aria-label="Login"><i
+                        class="fa-regular fa-user"></i></a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+        </div>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h2>Luxe<span class="highlight">.</span></h2>
+                <p>Curated excellence for the modern lifestyle.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <div class="link-group">
+                    <h3>Shop</h3>
+                    <a href="#">All Products</a>
+                    <a href="#">New Arrivals</a>
+                    <a href="#">Best Sellers</a>
+                </div>
+                <div class="link-group">
+                    <h3>Support</h3>
+                    <a href="#">FAQ</a>
+                    <a href="#">Shipping</a>
+                    <a href="#">Returns</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Luxe Store. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+
+</html>

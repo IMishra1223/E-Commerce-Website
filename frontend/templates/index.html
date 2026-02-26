@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Luxe Store{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-content">
+        <span class="hero-subtitle">New Collection 2026</span>
+        <h1 class="hero-title">Elevate Your <span>Everyday</span></h1>
+        <p class="hero-desc">Discover our thoughtfully curated selection of premium essentials designed for modern
+            living.</p>
+        <div class="hero-actions">
+            <a href="#products" class="btn btn-primary">Shop Now</a>
+            <a href="#" class="btn btn-secondary">Explore Lookbook</a>
+        </div>
+    </div>
+    <div class="hero-image-wrapper">
+        <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1920&auto=format&fit=crop"
+            class="hero-image" alt="Premium lifestyle items">
+    </div>
+</section>
+
+<section id="products" class="product-section">
+    <div class="section-header">
+        <h2>Featured Arrivals</h2>
+        <a href="#" class="view-all">View All <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+
+    {% if products %}
+    <div class="product-grid">
+        {% for product in products %}
+        <div class="product-card">
+            <a href="{{ url_for('product_detail', product_id=product.id) }}" class="product-image-link">
+                <div class="image-container">
+                    {% if product.image_url %}
+                    <img src="{{ product.image_url }}" alt="{{ product.name }}" class="product-img">
+                    {% else %}
+                    <div class="product-placeholder">
+                        <i class="fa-solid fa-image"></i>
+                    </div>
+                    {% endif %}
+                    <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="POST"
+                        class="quick-add-form">
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit" class="quick-add-btn">Quick Add</button>
+                    </form>
+                </div>
+            </a>
+            <div class="product-info">
+                <span class="product-category">{{ product.category.name if product.category else 'Uncategorized'
+                    }}</span>
+                <h3 class="product-name"><a href="{{ url_for('product_detail', product_id=product.id) }}">{{
+                        product.name }}</a></h3>
+                <div class="product-price-row">
+                    <span class="product-price">${{ product.price }}</span>
+                    {% if not product.stock %}
+                    <span class="badge out-of-stock">Out of Stock</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon"><i class="fa-solid fa-box-open"></i></div>
+        <h3>No products available</h3>
+        <p>Check back later or ensure the backend API is running.</p>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}
